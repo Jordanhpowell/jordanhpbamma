@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
-import Text from '@/components/shared_ui/text';
 import { useStore } from '@/hooks/useStore';
-import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import OnboardTourHandler from '../tutorials/dbot-tours/onboarding-tour';
 import Announcements from './announcements';
@@ -15,64 +13,27 @@ type TMobileIconGuide = {
 };
 
 const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
-    const { load_modal, dashboard, client, google_drive } = useStore();
+    const { load_modal, dashboard, client } = useStore();
     const { dashboard_strategies } = load_modal;
-    const { is_google_drive_configured } = google_drive;
-    const { active_tab, active_tour } = dashboard;
-    const has_dashboard_strategies = !!dashboard_strategies?.length;
+    const { is_onboarding_tour_active, setActiveTour } = dashboard;
     const { isDesktop, isTablet } = useDevice();
+    const has_dashboard_strategies = !!dashboard_strategies?.length;
+    const active_tour = is_onboarding_tour_active ? 'onboarding' : undefined;
 
     return (
         <React.Fragment>
-            <div
-                className={classNames('tab__dashboard', {
-                    'tab__dashboard--tour-active': active_tour,
-                })}
-            >
+            <div className={classNames('tab__dashboard', { 'tab__dashboard--tour-active': active_tour })}>
                 <div className='tab__dashboard__content'>
                     {client.is_logged_in && (
                         <Announcements is_mobile={!isDesktop} is_tablet={isTablet} handleTabChange={handleTabChange} />
                     )}
                     <div className='quick-panel'>
-                        <div
-                            className={classNames('tab__dashboard__header', {
-                                'tab__dashboard__header--listed': isDesktop && has_dashboard_strategies,
-                            })}
-                        >
-                            {!has_dashboard_strategies && (
-                                <Text
-                                    className='title'
-                                    as='h2'
-                                    color='prominent'
-                                    size={isDesktop ? 'sm' : 's'}
-                                    lineHeight='xxl'
-                                    weight='bold'
-                                >
-                                    {localize('Load or build your bot')}
-                                </Text>
-                            )}
-                            <Text
-                                as='p'
-                                color='prominent'
-                                lineHeight='s'
-                                size={isDesktop ? 's' : 'xxs'}
-                                className={classNames('subtitle', { 'subtitle__has-list': has_dashboard_strategies })}
-                            >
-                                {is_google_drive_configured
-                                    ? localize(
-                                          'Import a bot from your computer or Google Drive, build it from scratch, or start with a quick strategy.'
-                                      )
-                                    : localize(
-                                          'Import a bot from your computer, build it from scratch, or start with a quick strategy.'
-                                      )}
-                            </Text>
-                        </div>
-                        <Cards has_dashboard_strategies={has_dashboard_strategies} is_mobile={!isDesktop} />
+                        <Cards has_dashboard_strategies={has_dashboard_strategies} />
+                        <InfoPanel />
                     </div>
                 </div>
             </div>
-            <InfoPanel />
-            {active_tab === 0 && <OnboardTourHandler is_mobile={!isDesktop} />}
+            {active_tour && <OnboardTourHandler setActiveTour={setActiveTour} is_active={!!active_tour} />}
         </React.Fragment>
     );
 });
