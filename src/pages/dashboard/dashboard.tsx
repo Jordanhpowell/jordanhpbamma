@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
-import Text from '@/components/shared_ui/text';
 import { useStore } from '@/hooks/useStore';
-import { localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import OnboardTourHandler from '../tutorials/dbot-tours/onboarding-tour';
 import Announcements from './announcements';
@@ -20,7 +18,6 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
     const { is_onboarding_tour_active, setActiveTour } = dashboard;
     const { isDesktop, isTablet } = useDevice();
     const has_dashboard_strategies = !!dashboard_strategies?.length;
-
     const active_tour = is_onboarding_tour_active ? 'onboarding' : undefined;
 
     const strategies = [
@@ -40,21 +37,17 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     )}
 
                     <div style={{ padding: '32px 20px', maxWidth: '1200px', margin: '0 auto' }}>
-                        <h1 style={{ textAlign: 'center', color: '#fff', fontSize: '32px', marginBottom: '8px' }}>
+                        <h1 style={{ textAlign: 'center', color: '#ffffff', fontSize: '32px', marginBottom: '8px' }}>
                             AI Strategies
                         </h1>
                         <p style={{ textAlign: 'center', color: '#9ca3af', marginBottom: '32px' }}>
                             All strategies unlocked. Pick one and start trading.
                         </p>
-
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                            gap: '16px',
-                        }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
                             {strategies.map((s) => (
                                 <div
                                     key={s.title}
+                                    onClick={() => handleTabChange(1)}
                                     style={{
                                         background: '#1f2937',
                                         border: '1px solid #374151',
@@ -62,9 +55,8 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                                         padding: '20px',
                                         cursor: 'pointer',
                                     }}
-                                    onClick={() => handleTabChange(1)}
                                 >
-                                    <h3 style={{ color: '#fff', margin: '0 0 8px', fontSize: '18px' }}>{s.title}</h3>
+                                    <h3 style={{ color: '#ffffff', margin: '0 0 8px', fontSize: '18px' }}>{s.title}</h3>
                                     <p style={{ color: '#9ca3af', margin: 0, fontSize: '14px' }}>{s.description}</p>
                                 </div>
                             ))}
@@ -72,20 +64,6 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     </div>
 
                     <div className='quick-panel'>
-                        <div className={classNames('tab__dashboard__header', {
-                            'tab__dashboard__header--listed': isDesktop && has_dashboard_strategies,
-                        })}>
-                            {!has_dashboard_strategies && (
-                                <div>
-                                    <Text as='h2' size='md' weight='bold' color='prominent' align='center'>
-                                        {localize('Load or build your bot')}
-                                    </Text>
-                                    <Text as='p' size='sm' color='less-prominent' align='center' className='tab__dashboard__header__subtitle'>
-                                        {localize('Import a bot from your computer or Google Drive, or build it from scratch.')}
-                                    </Text>
-                                </div>
-                            )}
-                        </div>
                         <Cards has_dashboard_strategies={has_dashboard_strategies} />
                         <InfoPanel />
                     </div>
