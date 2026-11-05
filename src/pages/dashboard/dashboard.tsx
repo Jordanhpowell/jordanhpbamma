@@ -17,10 +17,34 @@ type TMobileIconGuide = {
 const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
     const { load_modal, dashboard, client, google_drive } = useStore();
     const { dashboard_strategies } = load_modal;
-    const { is_google_drive_configured } = google_drive;
-    const { active_tab, active_tour } = dashboard;
-    const has_dashboard_strategies = !!dashboard_strategies?.length;
+    const { active_tab, is_onboarding_tour_active, setActiveTour } = dashboard;
     const { isDesktop, isTablet } = useDevice();
+    const has_dashboard_strategies = !!dashboard_strategies?.length;
+
+    const active_tour = is_onboarding_tour_active ? 'onboarding' : undefined;
+
+    const strategies = [
+        {
+            title: 'Digit Differs',
+            description: 'High win-rate strategy. Wins if the last digit is not the one you pick (≈90%).',
+        },
+        {
+            title: 'Digit Matches',
+            description: 'High payout strategy. Wins if the last digit matches the one you pick (≈10%).',
+        },
+        {
+            title: 'Dual Rise / Fall',
+            description: 'Places both CALL and PUT at the same time. One side almost always wins.',
+        },
+        {
+            title: 'Even / Odd',
+            description: 'Simple 50/50 digit strategy with solid money management options.',
+        },
+        {
+            title: 'Over / Under',
+            description: 'Predict if the last digit is over or under a barrier you choose.',
+        },
+    ];
 
     return (
         <React.Fragment>
@@ -33,6 +57,46 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                     {client.is_logged_in && (
                         <Announcements is_mobile={!isDesktop} is_tablet={isTablet} handleTabChange={handleTabChange} />
                     )}
+
+                    {/* NEW STRATEGY CARDS SECTION */}
+                    <div style={{ padding: '32px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+                        <Text as='h1' size='xl' weight='bold' color='prominent' align='center'>
+                            AI Strategies
+                        </Text>
+                        <Text as='p' size='md' color='less-prominent' align='center' style={{ marginTop: 8, marginBottom: 32 }}>
+                            All strategies unlocked. Pick one and start trading.
+                        </Text>
+
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                                gap: '16px',
+                            }}
+                        >
+                            {strategies.map((s) => (
+                                <div
+                                    key={s.title}
+                                    style={{
+                                        background: '#1f2937',
+                                        border: '1px solid #374151',
+                                        borderRadius: '12px',
+                                        padding: '20px',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => handleTabChange(1)} // goes to Bot Builder
+                                >
+                                    <Text as='h3' size='md' weight='bold' color='prominent'>
+                                        {s.title}
+                                    </Text>
+                                    <Text as='p' size='sm' color='less-prominent' style={{ marginTop: 8 }}>
+                                        {s.description}
+                                    </Text>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     <div className='quick-panel'>
                         <div
                             className={classNames('tab__dashboard__header', {
@@ -40,39 +104,28 @@ const DashboardComponent = observer(({ handleTabChange }: TMobileIconGuide) => {
                             })}
                         >
                             {!has_dashboard_strategies && (
-                                <Text
-                                    className='title'
-                                    as='h2'
-                                    color='prominent'
-                                    size={isDesktop ? 'sm' : 's'}
-                                    lineHeight='xxl'
-                                    weight='bold'
-                                >
-                                    {localize('Load or build your bot')}
-                                </Text>
+                                <div>
+                                    <Text as='h2' size='md' weight='bold' color='prominent' align='center'>
+                                        {localize('Load or build your bot')}
+                                    </Text>
+                                    <Text
+                                        as='p'
+                                        size='sm'
+                                        color='less-prominent'
+                                        align='center'
+                                        className='tab__dashboard__header__subtitle'
+                                    >
+                                        {localize('Import a bot from your computer or Google Drive, or build it from scratch.')}
+                                    </Text>
+                                </div>
                             )}
-                            <Text
-                                as='p'
-                                color='prominent'
-                                lineHeight='s'
-                                size={isDesktop ? 's' : 'xxs'}
-                                className={classNames('subtitle', { 'subtitle__has-list': has_dashboard_strategies })}
-                            >
-                                {is_google_drive_configured
-                                    ? localize(
-                                          'Import a bot from your computer or Google Drive, build it from scratch, or start with a quick strategy.'
-                                      )
-                                    : localize(
-                                          'Import a bot from your computer, build it from scratch, or start with a quick strategy.'
-                                      )}
-                            </Text>
                         </div>
-                        <Cards has_dashboard_strategies={has_dashboard_strategies} is_mobile={!isDesktop} />
+                        <Cards has_dashboard_strategies={has_dashboard_strategies} />
+                        <InfoPanel />
                     </div>
                 </div>
             </div>
-            <InfoPanel />
-            {active_tab === 0 && <OnboardTourHandler is_mobile={!isDesktop} />}
+            {active_tour && <OnboardTourHandler setActiveTour={setActiveTour} is_active={!!active_tour} />}
         </React.Fragment>
     );
 });
