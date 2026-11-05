@@ -1,18 +1,17 @@
 {
-    "brand_name": "YourBrand",
-    "brand_domain": "yourbrand.com",
+    "brand_name": "Jordanhpbama",
+    "brand_domain": "jordanhpbamma",
     "brand_hostname": {
         "staging": "staging.yourbrand.com/dashboard",
         "production": "yourbrand.com/dashboard"
     },
     "domain_name": "YourBrand.com",
     "colors": {
-  "primary": "#10b981",
-  "secondary": "#059669",
-  "tertiary": "#34d399",
-  "success": "#10b981",
-  "danger": "#ef4444"
-}
+        "primary": "#10b981",
+        "secondary": "#059669",
+        "tertiary": "#34d399",
+        "success": "#10b981",
+        "danger": "#ef4444",
         "warning": "#f59e0b",
         "info": "#0ea5e9",
         "neutral": "#6b7280",
@@ -49,30 +48,9 @@
         }
     },
     "color_variants": {
-        "light_variants": [
-            100,
-            200,
-            300,
-            400,
-            500
-        ],
-        "dark_variants": [
-            600,
-            700,
-            800,
-            900
-        ],
-        "opacity_variants": [
-            10,
-            20,
-            30,
-            40,
-            50,
-            60,
-            70,
-            80,
-            90
-        ]
+        "light_variants": [100, 200, 300, 400, 500],
+        "dark_variants": [600, 700, 800, 900],
+        "opacity_variants": [10, 20, 30, 40, 50, 60, 70, 80, 90]
     },
     "theme_config": {
         "enable_dynamic_themes": true,
